@@ -7,7 +7,7 @@ const Vehicle = sequelize.define('Vehicle', {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4
     },
-    plate: {
+    license_plate: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
@@ -25,7 +25,7 @@ const Vehicle = sequelize.define('Vehicle', {
         allowNull: false,
         defaultValue: 'disponivel'
     },
-    currentLocation: {
+    coordenate: {
         type: DataTypes.JSONB,
         allowNull: false
     }

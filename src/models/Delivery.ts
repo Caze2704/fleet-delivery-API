@@ -29,11 +29,6 @@ const Delivery = sequelize.define('Delivery', {
         allowNull: false,
         defaultValue: 'aguardando_coleta'
     },
-    vehicleId: {
-        type: DataTypes.UUID,
-        allowNull: true,
-        defaultValue: null
-    }
 })
 
 export default Delivery
