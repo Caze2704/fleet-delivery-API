@@ -1,5 +1,5 @@
 import { Vehicle } from "../models";
-import { CreateVehicleDTO } from "../types/Vehicle";
+import { CreateVehicleDTO, StatusVehicle } from "../types/Vehicle";
 
 // helpers
 
@@ -30,6 +30,25 @@ class VehicleService {
         return newVehicle
     }
 
+    static async listVehicle(status?: StatusVehicle){
+
+        if(status !== undefined){
+            if(typeof status !== 'string' || !['disponivel', 'em_rota', 'manutencao'].includes(status)){
+                throwError('Status inválidos!', 422)
+            }
+        }
+
+        const where = status ? { status } : {}
+
+        const vehicles = await Vehicle.findAll({where, order: [['createdAt', 'DESC']]})
+
+        if(vehicles.length === 0){
+            return vehicles
+        }
+
+        return vehicles
+    
+    }
 }
 
 export { VehicleService }
