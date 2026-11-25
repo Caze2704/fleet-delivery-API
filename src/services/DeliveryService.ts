@@ -1,7 +1,9 @@
+import sequelize from "../config/db";
 import { isCoordenate } from "../helpers/isCoordenate";
+import { isUUID } from "../helpers/isUUID";
 import { throwError } from "../helpers/throwError";
-import { Delivery } from "../models";
-import { CreateDeliveryDTO, StatusDelivery } from "../types/Delivery";
+import { Delivery, Vehicle } from "../models";
+import { CreateDeliveryDTO, StartDeliveryDTO, StatusDelivery } from "../types/Delivery";
 
 class DeliveryService {
 
@@ -44,6 +46,39 @@ class DeliveryService {
         return deliveries
     }
 
+
+    static async startDelivery(id: string, data: StartDeliveryDTO){
+
+        if(!data.vehicleId || typeof data.vehicleId !== 'string'){
+            throwError("Informe o veículo corretamente!", 422)
+        }
+
+        isUUID(id)
+        isUUID(data.vehicleId)
+
+        const result = await sequelize.transaction(async (t) => {
+
+            const delivery = await Delivery.findOne({where: {id}, transaction: t})
+
+            if(!delivery){
+                throwError('Entrega não encontrada!', 404)
+            }
+
+            const vehicle = await Vehicle.findOne({where: {id: data.vehicleId}, transaction: t})
+
+            if(!vehicle){
+                throwError('Veículo não encontrado!', 404)
+            }
+
+            await delivery.update({ status: "em_transito", vehicleId: data.vehicleId}, { transaction: t })
+
+            await vehicle.update({ status: "em_rota" }, { transaction: t})
+            return delivery
+        })
+
+        return result
+
+    }
 }
 
 export { DeliveryService }

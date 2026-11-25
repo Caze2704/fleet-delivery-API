@@ -44,7 +44,29 @@ async function listDelivery(req: Request, res: Response){
 
         res.status(status).json({ message })
     }
-
 }
 
-export { registerDelivery, listDelivery }
+async function startDelivery(req: Request, res: Response){
+    try {
+        
+        const { id } = req.params
+
+        const { vehicleId } = req.body || {}
+
+        const start = await DeliveryService.startDelivery(String(id), { vehicleId })
+
+        return res.status(200).json({
+            message: "Entrega iniciada com sucesso!",
+            start
+        })
+
+    } catch (error: any) {
+        console.log(error)
+        const status = error.statusCode || 500
+        const message = error.statusCode ? error.message : "Não foi possível completar a solicitação..."
+
+        res.status(status).json({ message })
+    }
+}
+
+export { registerDelivery, listDelivery, startDelivery }
