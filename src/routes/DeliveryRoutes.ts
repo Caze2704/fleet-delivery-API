@@ -3,8 +3,9 @@ const router = express.Router()
 
 // import controllers
 
-import { registerDelivery } from '../controllers/DeliveryController'
+import { listDelivery, registerDelivery } from '../controllers/DeliveryController'
 
 router.post('/', registerDelivery)
+router.get('/', listDelivery)
 
 export default router

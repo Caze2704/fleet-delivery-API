@@ -1,7 +1,7 @@
 import { isCoordenate } from "../helpers/isCoordenate";
 import { throwError } from "../helpers/throwError";
 import { Delivery } from "../models";
-import { CreateDeliveryDTO } from "../types/Delivery";
+import { CreateDeliveryDTO, StatusDelivery } from "../types/Delivery";
 
 class DeliveryService {
 
@@ -27,6 +27,21 @@ class DeliveryService {
         const delivery = await Delivery.create(info)
 
         return delivery
+    }
+
+    static async listDeliveries(status?: StatusDelivery){
+
+        if(status !== undefined){
+            if(typeof status !== 'string' || !['aguardando_coleta', 'em_transito', 'entregue', 'cancelada'].includes(status)){
+                throwError("Status inválido!", 422)
+            }
+        }
+
+        const where = status ? { status } : {}
+
+        const deliveries = await Delivery.findAll({where, order: [['createdAt', 'DESC']]}) // incluir depois o include: [{model: Vehicle}]
+
+        return deliveries
     }
 
 }
