@@ -1,5 +1,5 @@
 import { Vehicle } from "../models";
-import { CreateVehicleDTO, StatusVehicle } from "../types/Vehicle";
+import { CreateVehicleDTO, StatusVehicle, UpdateCoordenateDTO } from "../types/Vehicle";
 
 // helpers
 
@@ -47,7 +47,10 @@ class VehicleService {
         }
 
         return vehicles
-    
+    }
+
+    static async updateVehicleLocation(coordenate: UpdateCoordenateDTO){
+        
     }
 }
 

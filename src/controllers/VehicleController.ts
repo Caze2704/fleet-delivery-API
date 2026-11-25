@@ -47,4 +47,20 @@ async function listVehicle(req: Request, res: Response){
     }
 }
 
+async function updateVehicleLocation(req: Request, res: Response){
+    try {
+        
+        const { newCoordenate } = req.body || {}
+
+        const newVehicleLocation = await VehicleService.updateVehicleLocation({ newCoordenate })
+
+    } catch (error: any) {
+        console.log(error)
+        const status = error.statusCode || 500
+        const message = error.statusCode ? error.message : "Não foi possível completar a solicitação..."
+
+        res.status(status).json({ message })
+    }
+}
+
 export { createVehicle, listVehicle }
