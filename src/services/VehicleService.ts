@@ -5,6 +5,7 @@ import { CreateVehicleDTO, StatusVehicle, UpdateCoordenateDTO } from "../types/V
 
 import { throwError } from "../helpers/throwError";
 import { isCoordenate } from "../helpers/isCoordenate";
+import { isUUID } from "../helpers/isUUID";
 
 class VehicleService {
 
@@ -18,13 +19,13 @@ class VehicleService {
             throwError('Dados inseridos são inválidos!', 422)
         }
 
+        isCoordenate(data.coordenate)
+
         const plateExists = await Vehicle.findOne({ where: {license_plate: data.license_plate}})
 
         if(plateExists){
             throwError('Placa já cadastrada!', 409)
         }
-
-        const coordenate = isCoordenate(data.coordenate)
 
         const newVehicle = await Vehicle.create(data)
         return newVehicle
@@ -49,8 +50,30 @@ class VehicleService {
         return vehicles
     }
 
-    static async updateVehicleLocation(coordenate: UpdateCoordenateDTO){
+    static async updateVehicleLocation( id: string ,data: UpdateCoordenateDTO){
+
+        isUUID(id)
+
+        if(!data.newCoordenate){
+            throwError('Preencha a nova localização do veículo!', 422)
+        }
+
+        isCoordenate(data.newCoordenate)
         
+        const vehicle = await Vehicle.findOne({
+            where: {id}
+        })
+
+        if(!vehicle){
+            throwError('Veículo não encontrado!', 404)
+        }
+
+        const newCoordenate = await vehicle.update({
+            coordenate: data.newCoordenate
+        })
+
+        return newCoordenate
+
     }
 }
 

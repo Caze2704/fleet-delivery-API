@@ -3,10 +3,10 @@ const router = express.Router()
 
 // import controllers
 
-import { createVehicle, listVehicle } from '../controllers/VehicleController'
+import { createVehicle, listVehicle, updateVehicleLocation } from '../controllers/VehicleController'
 
 router.post('/', createVehicle)
 router.get('/', listVehicle)
-router.put('/:id')
+router.patch('/coordenate/:id', updateVehicleLocation)
 
 export default router

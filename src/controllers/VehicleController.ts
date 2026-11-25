@@ -49,10 +49,17 @@ async function listVehicle(req: Request, res: Response){
 
 async function updateVehicleLocation(req: Request, res: Response){
     try {
+
+        const { id } = req.params
         
         const { newCoordenate } = req.body || {}
 
-        const newVehicleLocation = await VehicleService.updateVehicleLocation({ newCoordenate })
+        const newVehicleLocation = await VehicleService.updateVehicleLocation(String(id), { newCoordenate })
+
+        res.status(200).json({
+            message: `Localização de veículo atualizada com sucesso! Nova localização: ${newVehicleLocation.get('coordenate')}`,
+            newVehicleLocation
+        })
 
     } catch (error: any) {
         console.log(error)
@@ -63,4 +70,4 @@ async function updateVehicleLocation(req: Request, res: Response){
     }
 }
 
-export { createVehicle, listVehicle }
+export { createVehicle, listVehicle, updateVehicleLocation }
