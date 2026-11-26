@@ -9,6 +9,6 @@ router.post('/', registerDelivery)
 router.get('/', listDelivery)
 router.patch('/:id/start', startDelivery)
 router.patch('/:id/complete', completeDelivery)
-router.patch('/:id/canceled', cancelDelivery)
+router.patch('/:id/cancel', cancelDelivery)
 
 export default router
