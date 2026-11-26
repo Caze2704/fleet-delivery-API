@@ -69,7 +69,6 @@ class VehicleService {
         })
 
         return newCoordenate
-
     }
 }
 

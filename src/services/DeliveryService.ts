@@ -77,7 +77,44 @@ class DeliveryService {
         })
 
         return result
+    }
 
+    static async completeDelivery(id: string){
+        isUUID(id)
+
+        const result = sequelize.transaction(async (t) => {
+
+            const delivery = await Delivery.findOne({
+                where: {id}, transaction: t, include: [{model: Vehicle}]
+            })
+
+            if(!delivery){
+                throwError('Entrega não encontrada!', 422)
+            }
+
+            if(delivery.get('status') !== 'em_transito'){
+                throwError('Apenas entregas em trânsito podem ser concluídas.', 422)
+            }
+
+            const vehicleId = delivery.get('vehicleId') as string
+
+            const vehicle = await Vehicle.findOne({
+                where: {id: vehicleId}, transaction: t
+            })
+
+            if(!vehicle){
+                throwError('Veículo não encontrado!', 404)
+            }
+
+            await delivery.update({status: "entregue"}, {transaction: t})
+            await vehicle.update({status: "disponivel", coordenate: delivery.get('destination')}, {transaction: t})
+
+            await delivery.reload({ include: [{model: Vehicle}], transaction: t})
+
+            return delivery
+        })
+
+        return result
     }
 }
 
