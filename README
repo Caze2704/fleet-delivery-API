@@ -1,0 +1,54 @@
+# 🚚 Fleet Delivery API
+
+API RESTful desenvolvida em **Node.js**, **TypeScript**, **Express** e **Sequelize (PostgreSQL)** para gerenciamento de frota de veículos e controle completo do ciclo de vida de entregas logísticas.
+
+Projeto desenvolvido como entrega prática da disciplina de **Lógica de Programação** do curso de **Bacharelado em Ciências e Tecnologia (UFRN)**, aplicando arquitetura em camadas, validação estrita em tempo de execução (*Fail-Fast*), tipagem avançada com DTOs e transações atômicas no banco de dados.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+* **Runtime & Linguagem:** Node.js, TypeScript (`tsx` para execução em desenvolvimento)
+* **Framework Web:** Express
+* **ORM & Banco de Dados:** Sequelize, PostgreSQL
+* **Segurança & Integridade:** Type Guards customizados (`isUUID`, `isCoordenate`), DTOs (`Omit`) e `sequelize.transaction`
+
+---
+
+## 📂 Arquitetura e Estrutura de Pastas
+
+O projeto segue o padrão de separação de responsabilidades em camadas:
+
+```text
+fleet-delivery-API/
+├── src/
+│   ├── config/
+│   │   └── db.ts                  # Configuração e conexão com o PostgreSQL via Sequelize
+│   ├── controllers/
+│   │   ├── DeliveryController.ts  # Camada HTTP (request/response) de entregas
+│   │   └── VehicleController.ts   # Camada HTTP (request/response) de veículos
+│   ├── helpers/
+│   │   ├── isCoordenate.ts        # Type Guard para validação de coordenadas [lat, lng]
+│   │   ├── isUUID.ts              # Type Guard para validação de identificadores UUID
+│   │   └── throwError.ts          # Padronização de exceções com HTTP status code
+│   ├── middlewares/               # Middlewares globais (ex: tratamento de erros)
+│   ├── models/
+│   │   ├── Delivery.ts            # Modelo Sequelize da tabela Deliveries
+│   │   ├── Vehicle.ts             # Modelo Sequelize da tabela Vehicles
+│   │   └── index.ts               # Associações e relacionamentos (Vehicle 1:N Delivery)
+│   ├── routes/
+│   │   ├── DeliveryRoutes.ts      # Definição dos endpoints de entregas
+│   │   └── VehicleRoutes.ts       # Definição dos endpoints de veículos
+│   ├── services/
+│   │   ├── DeliveryService.ts     # Regras de negócio, máquina de estados e transações
+│   │   └── VehicleService.ts      # Regras de negócio e disponibilidade da frota
+│   ├── types/
+│   │   ├── Coordenate.ts          # Tipagem de tupla geográfica [number, number]
+│   │   ├── Delivery.ts            # Tipos de status e DTOs (CreateDeliveryDTO, StartDeliveryDTO)
+│   │   ├── Vehicle.ts             # Tipos de status e DTOs de veículos
+│   │   └── express.d.ts           # Extensões de tipagem do Express
+│   ├── app.ts                     # Configuração de middlewares e registro das rotas
+│   └── server.ts                  # Inicialização do servidor HTTP e sincronização do banco
+├── .env.example                   # Modelo de variáveis de ambiente
+├── package.json
+└── tsconfig.json
