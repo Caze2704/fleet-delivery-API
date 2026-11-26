@@ -35,17 +35,13 @@ class VehicleService {
 
         if(status !== undefined){
             if(typeof status !== 'string' || !['disponivel', 'em_rota', 'manutencao'].includes(status)){
-                throwError('Status inválidos!', 422)
+                throwError('Status inválido!', 422)
             }
         }
 
         const where = status ? { status } : {}
 
         const vehicles = await Vehicle.findAll({where, order: [['createdAt', 'DESC']]})
-
-        if(vehicles.length === 0){
-            return vehicles
-        }
 
         return vehicles
     }
@@ -73,7 +69,6 @@ class VehicleService {
         })
 
         return newCoordenate
-
     }
 }
 
