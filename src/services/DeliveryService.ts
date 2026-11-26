@@ -41,11 +41,10 @@ class DeliveryService {
 
         const where = status ? { status } : {}
 
-        const deliveries = await Delivery.findAll({where, order: [['createdAt', 'DESC']]}) // incluir depois o include: [{model: Vehicle}]
+        const deliveries = await Delivery.findAll({where, order: [['createdAt', 'DESC']]})
 
         return deliveries
     }
-
 
     static async startDelivery(id: string, data: StartDeliveryDTO){
 
@@ -108,6 +107,49 @@ class DeliveryService {
 
             await delivery.update({status: "entregue"}, {transaction: t})
             await vehicle.update({status: "disponivel", coordenate: delivery.get('destination')}, {transaction: t})
+
+            await delivery.reload({ include: [{model: Vehicle}], transaction: t})
+
+            return delivery
+        })
+
+        return result
+    }
+
+    static async cancelDelivery(id: string){
+        isUUID(id)
+
+        const result = await sequelize.transaction(async (t) => {
+
+            const delivery = await Delivery.findOne({
+                where: {id}, transaction: t
+            })
+
+            if(!delivery){
+                throwError('Entrega não encontrada!', 404)
+            }
+
+            const status = delivery.get('status')
+
+            if(status === 'entregue' || status === 'cancelada'){
+                throwError('Entrega já concluída / finalizada', 422)
+            }
+
+            await delivery.update({ status: 'cancelada' }, { transaction: t })
+
+            const vehicleId = delivery.get('vehicleId') as string | null
+
+            if(vehicleId){
+                const vehicle = await Vehicle.findOne({
+                    where: { id: vehicleId }, transaction: t
+                })
+
+                if(!vehicle){
+                    throwError('Veículo não encontrado!', 404)
+                }
+
+                await vehicle.update({ status: 'disponivel'}, { transaction: t})
+            }
 
             await delivery.reload({ include: [{model: Vehicle}], transaction: t})
 
