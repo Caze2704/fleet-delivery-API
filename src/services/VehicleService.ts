@@ -1,8 +1,5 @@
 import { Vehicle } from "../models";
 import { CreateVehicleDTO, StatusVehicle, UpdateCoordenateDTO } from "../types/Vehicle";
-
-// helpers
-
 import { throwError } from "../helpers/throwError";
 import { isCoordenate } from "../helpers/isCoordenate";
 import { isUUID } from "../helpers/isUUID";

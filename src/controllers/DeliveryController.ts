@@ -88,4 +88,12 @@ async function completeDelivery(req: Request, res: Response){
     }
 }
 
-export { registerDelivery, listDelivery, startDelivery, completeDelivery }
+async function cancelDelivery(req: Request, res: Response){
+    try {
+        
+    } catch (error: any) {
+        console.log(error)
+    }
+}
+
+export { registerDelivery, listDelivery, startDelivery, completeDelivery, cancelDelivery }

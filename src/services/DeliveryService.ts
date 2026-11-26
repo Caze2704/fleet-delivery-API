@@ -41,11 +41,10 @@ class DeliveryService {
 
         const where = status ? { status } : {}
 
-        const deliveries = await Delivery.findAll({where, order: [['createdAt', 'DESC']]}) // incluir depois o include: [{model: Vehicle}]
+        const deliveries = await Delivery.findAll({where, order: [['createdAt', 'DESC']]})
 
         return deliveries
     }
-
 
     static async startDelivery(id: string, data: StartDeliveryDTO){
 
@@ -115,6 +114,10 @@ class DeliveryService {
         })
 
         return result
+    }
+
+    static async cancelDelivery(id: string){
+
     }
 }
 
